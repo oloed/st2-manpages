@@ -1,0 +1,12 @@
+[
+  {
+    "caption": "Manpages: Search for Selected Text",
+    "command": "open_man_page",
+    "args": {"source":"view"}
+  },
+  {
+    "caption": "Manpages: Search for User Input",
+    "command": "open_man_page",
+    "args": {"source":"input"}
+  }
+]
