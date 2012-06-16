@@ -82,7 +82,7 @@ def sorted_string_score_pairs(pairs):
   return (item['entry'] for item in uniquelist)
 
 
-def query_manpages(keyword, use_apropos=False):
+def query_manpages(keyword, allowed_sections, use_apropos=False):
   cmd = 'whatis'
 
   if use_apropos:
@@ -103,6 +103,13 @@ def query_manpages(keyword, use_apropos=False):
       names = (name.strip() for name in split[0].split(", "))
 
       for name in names:
+        section = section_for_name(name)
+
+        try:
+          allowed_sections.index(section)
+        except ValueError:
+          continue
+
         name_sans_sect = name[:name.index('(')]
 
         score = score_for_string(keyword, name_sans_sect)
@@ -141,7 +148,7 @@ class OpenManPageCommand(sublime_plugin.WindowCommand):
       if len(query) is 0:
         continue
 
-      results += query_manpages(str(query))
+      results += query_manpages(str(query), self.allowed_sections, self.use_apropos)
 
     results = sorted_string_score_pairs(results)
 
@@ -149,14 +156,20 @@ class OpenManPageCommand(sublime_plugin.WindowCommand):
 
 
   def get_query_input(self, input):
-    if input is None or input == '':
+    if input is None or len(input) is 0:
       return
 
-    results = sorted_string_score_pairs(query_manpages(str(input), False))
+    input = str(input)
+    results = sorted_string_score_pairs(query_manpages(input, self.allowed_sections, self.use_apropos))
     self.choose_from_results(results)
 
 
   def run(self, source):
+    settings = sublime.load_settings("Preferences.sublime-settings")
+    self.use_apropos = settings.get('manpage_use_apropos', False)
+    self.allowed_sections = settings.get('manpage_sections', ['2', '3'])
+    print type(self.allowed_sections)
+
     if source == 'input':
       self.window.show_input_panel('man query', '', self.get_query_input, None, None)
     elif source == 'view':
