@@ -181,7 +181,7 @@ class OpenManPageCommand(sublime_plugin.WindowCommand):
     elif source == 'view':
       self.queries_for_view(self.window.active_view())
     else:
-      print "open_man_page: Invalid source provided"
+      sublime.status_message("open_man_page: Invalid source provided")
 
 
   def choose_from_results(self, queries):
@@ -189,6 +189,7 @@ class OpenManPageCommand(sublime_plugin.WindowCommand):
     self.entries = list((item['entry'] for item in queries))
 
     if len(self.entries) is 0:
+      sublime.status_message("No man pages found")
       return
     elif len(self.entries) is 1 or queries[0]['score'] is maxint:
       self.entry_selected(0)
