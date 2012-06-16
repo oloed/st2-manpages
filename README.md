@@ -28,6 +28,28 @@ If you prefer the Command Palette, your have "Manpages: Search for
 Text" and "Manpages: Search for Input," which map to the sources above.
 
 
+Settings
+--------
+
+There are two options available for user settings:
+
+* `manpage_use_apropos` → Defaults to `false`
+
+    If set to `true`, this will tell the plugin to use the `apropos`
+    command instead of `whatis`. This allows it to match a wider
+    variety of man pages, but it can also lead to a great deal of
+    incorrect matches. Incidentally, the best way to understand the
+    difference between `apropos` and `whatis` is to check their
+    respective man pages.
+
+* `manpage_sections` → Defaults to `['2', '3']`
+
+    This specifies which man sections will actually be matched. If it's
+    not in here, it doesn't show up in the quick panel. This includes
+    subsections such as 3G.  In general, you'll only reference sections
+    2 and 3, but if you need more, you can add them.
+
+
 License
 -------
 
