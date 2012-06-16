@@ -79,7 +79,7 @@ def sorted_string_score_pairs(pairs):
       item['checked'] = True
       uniquelist.append(item)
 
-  return (item['entry'] for item in uniquelist)
+  return uniquelist
 
 
 def query_manpages(keyword, allowed_sections, use_apropos=False):
@@ -96,7 +96,7 @@ def query_manpages(keyword, allowed_sections, use_apropos=False):
   if outs:
     splits = (line.split(" - ", 1) for line in outs.splitlines())
     for split in splits:
-      if len(split) != 2:
+      if len(split) < 2:
         continue
 
       desc = split[1]
@@ -113,11 +113,18 @@ def query_manpages(keyword, allowed_sections, use_apropos=False):
         name_sans_sect = name[:name.index('(')]
 
         score = score_for_string(keyword, name_sans_sect)
-        queries.append({
+        alt_score = score_for_string(keyword, name)
+
+        if alt_score > score:
+          score = alt_score
+
+        item = {
             'score': score,
             'entry': [name, desc],
             'checked': False
-          })
+          }
+
+        queries.append(item)
 
   return queries
 
@@ -175,15 +182,17 @@ class OpenManPageCommand(sublime_plugin.WindowCommand):
     elif source == 'view':
       self.queries_for_view(self.window.active_view())
     else:
-      print "open_man_page: Incorrect source provided"
+      print "open_man_page: Invalid source provided"
 
 
   def choose_from_results(self, queries):
-    self.entries = list(queries)
+    queries = list(queries)
+    self.entries = list((item['entry'] for item in queries))
+
     if len(self.entries) is 0:
       return
-    elif len(self.entries) is 1:
-      self.entry_selected(1)
+    elif len(self.entries) is 1 or queries[0]['score'] is maxint:
+      self.entry_selected(0)
     else:
       self.window.show_quick_panel(self.entries, self.entry_selected)
 
