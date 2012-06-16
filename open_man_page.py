@@ -2,6 +2,11 @@ import sublime, sublime_plugin
 from sys import maxint
 import subprocess
 
+
+def section_for_name(name):
+  return name[name.index('(')+1:-1]
+
+
 def score_for_string(dick, dildo):
   # compare the dick to the dildo, find the one closest to the real thing
   if dick == dildo:
@@ -108,7 +113,7 @@ def query_manpages(keyword, use_apropos=False):
 def manpage_for_query(query):
   # expects query in form 'memcpy(3)'
   name = query[:query.index('(')]
-  sect = query[query.index('(')+1:query.index(')')]
+  sect = section_for_name(query)
 
   manproc = subprocess.Popen(['man', sect, name], stdout=subprocess.PIPE)
   colproc = subprocess.Popen(['col', '-b'], stdin=manproc.stdout, stdout=subprocess.PIPE)
