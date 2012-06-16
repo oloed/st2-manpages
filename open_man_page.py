@@ -175,7 +175,6 @@ class OpenManPageCommand(sublime_plugin.WindowCommand):
     settings = sublime.load_settings("Preferences.sublime-settings")
     self.use_apropos = settings.get('manpage_use_apropos', False)
     self.allowed_sections = settings.get('manpage_sections', ['2', '3'])
-    print type(self.allowed_sections)
 
     if source == 'input':
       self.window.show_input_panel('man query', '', self.get_query_input, None, None)
