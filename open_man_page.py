@@ -141,7 +141,7 @@ class OpenManPageCommand(sublime_plugin.WindowCommand):
     if input is None or input == '':
       return
 
-    results = sorted_string_score_pairs(query_manpages(str(query), False))
+    results = sorted_string_score_pairs(query_manpages(str(input), False))
     self.choose_from_results(results)
 
   def run(self, source):
