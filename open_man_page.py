@@ -46,6 +46,7 @@ def score_for_string(dick, dildo):
   return score
   # after-thought: WHY
 
+
 def sorted_string_score_pairs(pairs):
   def compare(l, r):
     if r['score'] < l['score']:
@@ -80,6 +81,7 @@ def sorted_string_score_pairs(pairs):
 
   return (item['entry'] for item in uniquelist)
 
+
 def query_manpages(keyword, use_apropos=False):
   cmd = 'whatis'
 
@@ -99,8 +101,10 @@ def query_manpages(keyword, use_apropos=False):
 
       desc = split[1]
       names = (name.strip() for name in split[0].split(", "))
+
       for name in names:
         name_sans_sect = name[:name.index('(')]
+
         score = score_for_string(keyword, name_sans_sect)
         queries.append({
             'score': score,
@@ -109,6 +113,7 @@ def query_manpages(keyword, use_apropos=False):
           })
 
   return queries
+
 
 def manpage_for_query(query):
   # expects query in form 'memcpy(3)'
@@ -122,6 +127,7 @@ def manpage_for_query(query):
   page = colproc.communicate()[0]
 
   return page
+
 
 class OpenManPageCommand(sublime_plugin.WindowCommand):
   def queries_for_view(self, view):
@@ -149,6 +155,7 @@ class OpenManPageCommand(sublime_plugin.WindowCommand):
     results = sorted_string_score_pairs(query_manpages(str(input), False))
     self.choose_from_results(results)
 
+
   def run(self, source):
     if source == 'input':
       self.window.show_input_panel('man query', '', self.get_query_input, None, None)
@@ -156,6 +163,7 @@ class OpenManPageCommand(sublime_plugin.WindowCommand):
       self.queries_for_view(self.window.active_view())
     else:
       print "open_man_page: Incorrect source provided"
+
 
   def choose_from_results(self, queries):
     self.entries = list(queries)
@@ -166,12 +174,14 @@ class OpenManPageCommand(sublime_plugin.WindowCommand):
     else:
       self.window.show_quick_panel(self.entries, self.entry_selected)
 
+
   def entry_selected(self, index):
     if index is -1:
       return
     entry = self.entries[index]
     page = manpage_for_query(entry[0])
     self.open_view_with_string(entry[0], page)
+
 
   def open_view_with_string(self, name, page):
     view = self.window.new_file()
