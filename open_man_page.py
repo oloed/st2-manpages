@@ -107,7 +107,7 @@ def query_manpages(keyword, allowed_sections, use_apropos=False):
 
         try:
           allowed_sections.index(section)
-        except ValueError:
+        except:
           continue
 
         name_sans_sect = name[:name.index('(')]
